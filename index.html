@@ -1539,6 +1539,46 @@
       /* 起動画面の記録写真を切らずに全部表示する: フレックスの縮みを止め、画像全体が収まる大きさにする */
       #bootAliasBg{ flex:0 0 auto; width:min(70vw, 290px); height:auto; object-fit:contain; }
     </style>
+    <style>
+      /* ===== 起動画面 最終調整（このブロックが起動画面に関する最終決定） =====
+         1) 記録写真バンドを廃止し、#bootAliasBg を画面全体の背景に戻す。
+            写真は読み込み時に全10体からランダムで1枚（JS側で選択、タイマー切替なし）。
+            配置計算: 要素は height:128% / top:-18% で画面より上下に大きく敷く。
+            正方形画像を cover で表示すると、スマホ(390x844)では表示倍率が縦駆動になり
+            画像は 1080x1080 で表示され、顔(元画像の縦30-45%)は要素内 y=324-486px、
+            画面上では y=172-334px = 画面高の 20-40% に来る。
+            360x740 でも同様に 20-40%、デスクトップ(1440x900)では横駆動の上下クロップ込みで 14-38% に収まる。
+         2) 文章の右端切れ修正: 従来は全体 box-sizing 指定が無く、.boot-inner の
+            width:94vw + padding 52px が画面幅を超え、#boot の overflow-x:hidden で右端が切れていた。
+            #boot 内に border-box を徹底し、パネル幅・長い英字行・ログ幅を画面内に収める。 */
+      #boot{ overflow-x:hidden; }
+      #boot *, #boot *::before, #boot *::after{ box-sizing:border-box; }
+      #bootAliasBg{
+        position:fixed; top:-18%; left:0; right:auto; bottom:auto;
+        width:100%; height:128%;
+        object-fit:cover; object-position:center center;
+        opacity:.68; filter:grayscale(.45) brightness(.64) contrast(1.06);
+        border:0; box-shadow:none; margin:0; flex:none;
+        z-index:0; pointer-events:none; display:block;
+      }
+      .boot-mosaic{ display:none; }
+      .boot-mosaic-veil{
+        background:linear-gradient(180deg, rgba(2,2,4,.16), rgba(2,2,4,.30) 42%, rgba(2,2,4,.66) 74%, rgba(2,2,4,.88));
+      }
+      #boot .boot-inner{ background:rgba(5,5,8,.45); width:min(660px, 100%); max-width:100%; }
+      .boot-kicker{
+        display:block; max-width:100%;
+        font-size:clamp(10px, 2.9vw, 12px); letter-spacing:.13em; line-height:1.9;
+        white-space:normal; overflow-wrap:anywhere; word-break:break-word;
+      }
+      .boot-title{ max-width:100%; overflow-wrap:anywhere; word-break:break-word; }
+      .boot-lead, #boot .boot-warn, .boot-frag{ max-width:100%; overflow-wrap:break-word; }
+      .boot-camline{ letter-spacing:.12em; }
+      .boot-camline span{ min-width:0; overflow-wrap:anywhere; word-break:break-word; }
+      .boot-label{ overflow-wrap:anywhere; }
+      #initBtn{ max-width:100%; white-space:normal; overflow-wrap:anywhere; }
+      #bootLog{ width:100%; max-width:560px; }
+    </style>
   </head>
   <body>
     <div class="scanlines" aria-hidden="true"></div>
@@ -3638,11 +3678,14 @@ var DIARY = [
 })();
 </script>
 <script>
-/* 起動画面の背景：モザイクに並ぶ記録写真の4枚目（NO.09 仮名2025）を再利用して背面に敷く */
+/* 起動画面の背景：モザイクに並ぶ記録写真（全10体）から、読み込みのたびにランダムで1枚を選んで背面に敷く（タイマー切替はしない） */
 (function(){
   var bg = document.getElementById("bootAliasBg");
   var imgs = document.querySelectorAll(".boot-mosaic img");
-  if(bg && imgs.length >= 4 && imgs[3].src){ bg.src = imgs[3].src; }
+  if(bg && imgs.length){
+    var pick = imgs[Math.floor(Math.random() * imgs.length)];
+    if(pick && pick.src){ bg.src = pick.src; }
+  }
 })();
 </script>
 </body>
