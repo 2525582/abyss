@@ -1508,6 +1508,32 @@
       }
       #boot .boot-inner{ background:rgba(5,5,8,.55); }
       #boot .boot-warn{ background:rgba(10,10,17,.66); }
+
+      /* ===== 起動画面の背景修正2：仮名2025の顔をパネルの外（上部バンド）に配置 =====
+         前回の cover 方式の限界: 正方形画像を 390×844 で cover すると表示は 844×844、
+         縦のはみ出しが 0 になり object-position の縦指定が無効。顔（画像の縦30〜45%）は
+         画面 y=253〜380px に来て、画面の大半を占めるパネル（y≈22〜700px超）の裏に隠れた。
+         対策: 写真を全画面背景ではなく、パネル上部のバンドとして通常フローに置く。
+         サイズ計算（画像は正方形なので高さ＝幅）:
+           幅 = min(80vw, 340px)
+           スマホ 390px幅 → 312×312px。顔は画像内 y=94〜140px → 画面 y≈128〜174px。
+             札（画像の縦62〜78%）は画像内 y=193〜243px → 画面 y≈227〜277px。
+             パネル上端は y≈362px なので、顔も札もパネルの外（上）に出る。
+           デスクトップ（例 1440×900）→ 340×340px。顔は画像内 y=102〜153px、
+             パネル上端は y≈390px で、やはり顔・札ともパネルの外に出る。
+         z-index:2 でベール（z-index:1）の上に出し、ベール越しの減光も受けない。
+         パネルに触れていないので文字の読みやすさは従来どおり。 */
+      #boot{ justify-content:flex-start; }
+      #bootAliasBg{
+        position:relative; inset:auto; z-index:2;
+        width:min(80vw, 340px); height:auto;
+        margin:6px auto 16px;
+        object-fit:initial; object-position:initial;
+        opacity:.92; filter:grayscale(.2) brightness(.82) contrast(1.05);
+        border:1px solid var(--line2);
+        box-shadow:0 0 0 1px rgba(0,0,0,.6), 0 0 34px rgba(255,30,56,.14);
+      }
+      #boot .boot-inner{ margin:0 auto 34px; }
     </style>
   </head>
   <body>
