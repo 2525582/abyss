@@ -1488,6 +1488,27 @@
       }
       .boot-mosaic{ opacity:.35; }
     </style>
+    <style>
+      /* ===== 起動画面の背景修正：仮名2025（NO.09）を確実に目で見える状態にする =====
+         原因: #bootAliasBg と同じ z-index:0 の .boot-mosaic（不透明な黒背景＋brightness(.26) の写真群）が
+         DOM順で後に来るため写真の上に重なり、さらに z-index:1 の濃いベール（黒72〜88%）と
+         z-index:2 のパネル rgba(5,5,8,.82) が覆い、写真の光が数％しか残らず真っ黒に見えていた。
+         対策: モザイクを起動画面から外し、ベールを大幅に弱め、パネルを半透明にして写真を透かす。
+         ※モザイクの <img> 自体は残るので、背景流用JS（imgs[3].src の読み取り）はそのまま動く。 */
+      .boot-mosaic{ display:none; }
+      #bootAliasBg{
+        opacity:.55;
+        filter:grayscale(.25) brightness(.66) contrast(1.05);
+        object-position:center 15%;
+      }
+      .boot-mosaic-veil{
+        background:
+          radial-gradient(ellipse 90% 80% at 50% 45%, transparent 45%, rgba(0,0,0,.5) 100%),
+          linear-gradient(180deg, rgba(2,2,4,.4), rgba(2,2,4,.14) 38%, rgba(2,2,4,.36) 68%, rgba(2,2,4,.76));
+      }
+      #boot .boot-inner{ background:rgba(5,5,8,.55); }
+      #boot .boot-warn{ background:rgba(10,10,17,.66); }
+    </style>
   </head>
   <body>
     <div class="scanlines" aria-hidden="true"></div>
