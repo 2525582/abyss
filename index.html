@@ -1535,6 +1535,10 @@
       }
       #boot .boot-inner{ margin:0 auto 34px; }
     </style>
+    <style>
+      /* 起動画面の記録写真を切らずに全部表示する: フレックスの縮みを止め、画像全体が収まる大きさにする */
+      #bootAliasBg{ flex:0 0 auto; width:min(70vw, 290px); height:auto; object-fit:contain; }
+    </style>
   </head>
   <body>
     <div class="scanlines" aria-hidden="true"></div>
