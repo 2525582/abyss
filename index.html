@@ -1579,6 +1579,24 @@
       #initBtn{ max-width:100%; white-space:normal; overflow-wrap:anywhere; }
       #bootLog{ width:100%; max-width:560px; }
     </style>
+    <style>
+      /* ===== 起動画面 パネル撤去（最終） =====
+         .boot-inner の箱（背景・枠線・二重枠・影枠）を取り払い、写真の上に直接文字を乗せる。
+         重なり順は 写真(z-index:0) → ベール(z-index:1) → テキスト(z-index:2) のままで、
+         テキストの背後に不透明な要素は無くなる。読みやすさはベール（上部は薄く顔が見え、
+         下部は濃いグラデーション）と各テキストの暗い影で確保する。
+         警告ボックス（.boot-warn）の半透明の下地は従来どおり残す。 */
+      #boot .boot-inner{ background:transparent; border:0; outline:none; box-shadow:none; }
+      #boot .boot-kicker,
+      #boot .boot-title,
+      #boot .boot-lead,
+      #boot .boot-camline,
+      #boot .boot-frag,
+      #boot .boot-label,
+      #bootLog{
+        text-shadow:0 1px 3px rgba(0,0,0,.92), 0 0 14px rgba(0,0,0,.75), 0 0 34px rgba(0,0,0,.55);
+      }
+    </style>
   </head>
   <body>
     <div class="scanlines" aria-hidden="true"></div>
